@@ -1,4 +1,5 @@
 import express from "express";
+import http from "http"
 
 const app = express();
 
@@ -12,3 +13,5 @@ app.get("/*", (req, res) => res.redirect("/")); // catchall url
 const port = 3000;
 const handleListen = () => console.log(`Listening on http://localhost:${port}`);
 app.listen(port, handleListen);
+
+const server = http.createServer(app);
