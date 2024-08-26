@@ -21,8 +21,7 @@ function handleConnection(socket) {
 }
 wss.on("connection", handleConnection);
 
-const protocol = 'http';
 const port = 3000;
-const handleListen = () => console.log(`Listening on ${protocol}://localhost:${port}`);
+const handleListen = () => console.log(`Listening on http://localhost:${port}`);
 
 server.listen(port, handleListen); // http 서버에 접근
