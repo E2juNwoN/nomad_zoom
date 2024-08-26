@@ -11,10 +11,12 @@ app.use("/public", express.static(__dirname + "/public"));
 app.get("/", (req, res) => res.render("home"));
 app.get("/*", (req, res) => res.redirect("/")); // catchall url
 
-const port = 3000;
-const handleListen = () => console.log(`Listening on http://localhost:${port}`);
-app.listen(port, handleListen);
-
 const server = http.createServer(app); // http 서버
 
-const wss = new WebSocket.Server();
+const wss = new WebSocket.Server({server}); // 같은 서버에서 http, webSocket 둘 다 작동시킴
+
+const protocol = 'http';
+const port = 3000;
+const handleListen = () => console.log(`Listening on ${protocol}://localhost:${port}`);
+
+server.listen(port, handleListen); // http 서버에 접근
