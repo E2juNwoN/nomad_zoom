@@ -1,3 +1,4 @@
+import { Socket } from "dgram";
 import express from "express";
 import http from "http";
 import WebSocket from "ws";
@@ -14,6 +15,11 @@ app.get("/*", (req, res) => res.redirect("/")); // catchall url
 const server = http.createServer(app); // http 서버
 
 const wss = new WebSocket.Server({server}); // 같은 서버에서 http, webSocket 둘 다 작동시킴
+
+function handleConnection(socket) {
+    console.log(socket);
+}
+wss.on("connection", handleConnection);
 
 const protocol = 'http';
 const port = 3000;
