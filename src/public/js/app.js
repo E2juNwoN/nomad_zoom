@@ -6,9 +6,13 @@ socket.addEventListener("open", () => {
 });
 
 socket.addEventListener("message", (message) => {
-    console.log('Got this: ', message.data, 'from server');
+    console.log('New massage: ', message.data);
 });
 
 socket.addEventListener("close", () => {
     console.log("Disconnected to Server!");
 });
+
+setTimeout(() => {
+    socket.send("hello from the browser~");
+}, 10000);
