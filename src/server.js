@@ -20,9 +20,8 @@ wss.on("connection", (socket) => {
     console.log("Connected to Browser~");
     socket.on("close", () => console.log("Disconnected from browser!"));
     socket.on("message", (message) => {
-        console.log(message.toString()); // Buffer 객체를 문자열로 변환
+        socket.send(message.toString()); // Buffer 객체를 문자열로 변환
     });
-    socket.send("hello!!");
 });
 
 const port = 3000;
