@@ -17,6 +17,7 @@ const server = http.createServer(app); // http 서버
 const wss = new WebSocket.Server({server}); // 같은 서버에서 http, webSocket 둘 다 작동시킴
 
 wss.on("connection", (socket) => {
+    console.log("Connected to Browser~");
     socket.send("hello, chat!!");
 });
 
