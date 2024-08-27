@@ -16,11 +16,14 @@ const server = http.createServer(app); // http 서버
 
 const wss = new WebSocket.Server({server}); // 같은 서버에서 http, webSocket 둘 다 작동시킴
 
+const sockets = [];
+
 wss.on("connection", (socket) => {
+    sockets.push(socket);
     console.log("Connected to Browser~");
     socket.on("close", () => console.log("Disconnected from browser!"));
     socket.on("message", (message) => {
-        socket.send(message.toString()); // Buffer 객체를 문자열로 변환
+        sockets.forEach((aSocket) => aSocket.send(message.toString()));
     });
 });
 
