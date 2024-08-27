@@ -1,6 +1,16 @@
 const messageList = document.querySelector("ul");
 
-const messageForm = document.querySelector("form");
+const nicknameForm = document.querySelector("#nickname");
+nicknameForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const input = nicknameForm.querySelector("input");
+    socket.send({
+        type: "nickname",
+        payload: input.value,
+    });
+});
+
+const messageForm = document.querySelector("#message");
 messageForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const input = messageForm.querySelector("input");
