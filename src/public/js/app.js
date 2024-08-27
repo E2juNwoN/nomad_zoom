@@ -1,20 +1,22 @@
+function makeMessage(type, payload) {
+    const msg = {type, payload};
+    return JSON.stringify(msg);
+}
+
 const messageList = document.querySelector("ul");
 
 const nicknameForm = document.querySelector("#nickname");
 nicknameForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const input = nicknameForm.querySelector("input");
-    socket.send({
-        type: "nickname",
-        payload: input.value,
-    });
+    socket.send(makeMessage("nickname", input.value));
 });
 
 const messageForm = document.querySelector("#message");
 messageForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const input = messageForm.querySelector("input");
-    socket.send(input.value);
+    socket.send(makeMessage("new message", input.value));
     input.value = "";
 });
 
