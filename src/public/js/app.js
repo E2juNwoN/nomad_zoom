@@ -6,7 +6,7 @@ socket.addEventListener("open", () => {
 });
 
 socket.addEventListener("message", (message) => {
-    console.log('Got this: ', message, 'from server');
+    console.log('Got this: ', message.data, 'from server');
 });
 
 socket.addEventListener("close", () => {

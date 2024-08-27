@@ -19,6 +19,7 @@ const wss = new WebSocket.Server({server}); // 같은 서버에서 http, webSock
 wss.on("connection", (socket) => {
     console.log("Connected to Browser~");
     socket.send("hello, chat!!");
+    socket.on("close", () => console.log("Disconnected from browser!"));
 });
 
 const port = 3000;
