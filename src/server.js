@@ -1,7 +1,6 @@
-import { Socket } from "dgram";
 import express from "express";
 import http from "http";
-import WebSocket from "ws";
+import SocketIO from "socket.io"
 
 const app = express();
 
@@ -12,12 +11,12 @@ app.use("/public", express.static(__dirname + "/public"));
 app.get("/", (req, res) => res.render("home"));
 app.get("/*", (req, res) => res.redirect("/")); // catchall url
 
-const server = http.createServer(app); // http 서버
+const httpServer = http.createServer(app);
+const wsServer = SocketIO(httpServer);
 
+/*
 const wss = new WebSocket.Server({server}); // 같은 서버에서 http, webSocket 둘 다 작동시킴
-
 const sockets = [];
-
 wss.on("connection", (socket) => {
     sockets.push(socket);
     socket["nickname"] = "Anonymous";
@@ -32,8 +31,7 @@ wss.on("connection", (socket) => {
     });
     socket.on("close", () => console.log("Disconnected from browser!"));
 });
+*/
 
 const port = 3000;
-const handleListen = () => console.log(`Listening on http://localhost:${port}`);
-
-server.listen(port, handleListen); // http 서버에 접근
+httpServer.listen(port, () => console.log(`Listening on http://localhost:${port}`)); // http 서버에 접근
