@@ -19,10 +19,9 @@ wsServer.on("connection", (socket) => {
         console.log(`Socket Event: ${event}`);
     });
     socket.on("enter_room", (roomName, done) => {
-        console.log(socket.id);
         socket.join(roomName);
-        console.log(socket.rooms); // socket이 현재 어떤 room에 있는지
         done();
+        socket.to(roomName).emit("welcome");
     });
 });
 
