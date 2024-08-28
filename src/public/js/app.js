@@ -6,6 +6,6 @@ const form = document.querySelector("form");
 form.addEventListener("submit", (event) => {
     event.preventDefault();
     const input = form.querySelector("input");
-    socket.emit("room", { payload: input.value });
+    socket.emit("enter_room", { payload: input.value });
     input.value = "";
 });
