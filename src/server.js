@@ -22,7 +22,7 @@ wsServer.on("connection", (socket) => {
         console.log(socket.id);
         socket.join(roomName);
         console.log(socket.rooms); // socket이 현재 어떤 room에 있는지
-        setTimeout(() => {done();}, 5000);
+        done();
     });
 });
 
