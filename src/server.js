@@ -18,17 +18,24 @@ wsServer.on("connection", (socket) => {
     socket.onAny((event) => {
         console.log(`Socket Event: ${event}`);
     });
+
     socket.on("enter_room", (roomName, done) => {
         socket.join(roomName);
         done();
         socket.to(roomName).emit("welcome");
     });
+
     socket.on("disconnecting", () => {
         socket.rooms.forEach((room) => socket.to(room).emit("bye"));
         socket.onAny((event) => {
             console.log(`Socket Event: ${event}`);
         });
     })
+
+    socket.on("new_message", (msg, room, done) => {
+        socket.to(room).emit("new_message", `Other: ${msg}`);
+        done();
+    });
 });
 
 const port = 3000;

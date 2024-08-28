@@ -7,10 +7,12 @@ function showRoom() {
     form.addEventListener("submit", (event) => {
         event.preventDefault();
         const input = room.querySelector("input");
-        socket.emit("new_message", input.value, () => {
-            addMessage(`You: ${input.value}`);
+        const value = input.value;
+        socket.emit("new_message", input.value, roomName, () => {
+            addMessage(`You: ${value}`);
         });
-    })
+        input.value = "";
+    });
 }
 
 function addMessage(msg) {
@@ -46,3 +48,5 @@ socket.on("bye", () => {
     socket.emit("leave_room");
     addMessage("Someone left...");
 });
+
+socket.on("new_message", addMessage);
