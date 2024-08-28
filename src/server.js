@@ -14,6 +14,10 @@ app.get("/*", (req, res) => res.redirect("/")); // catchall url
 const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer);
 
+wsServer.on("connection", (socket) => {
+    console.log(socket);
+});
+
 /*
 const wss = new WebSocket.Server({server}); // 같은 서버에서 http, webSocket 둘 다 작동시킴
 const sockets = [];
