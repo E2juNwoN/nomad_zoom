@@ -15,27 +15,11 @@ const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer);
 
 wsServer.on("connection", (socket) => {
-    socket.on("enter_room", (msg) => console.log(msg));
-});
-
-/*
-const wss = new WebSocket.Server({server}); // 같은 서버에서 http, webSocket 둘 다 작동시킴
-const sockets = [];
-wss.on("connection", (socket) => {
-    sockets.push(socket);
-    socket["nickname"] = "Anonymous";
-    socket.on("message", (msg) => {
-        const message = JSON.parse(msg);
-        switch(message.type) {
-            case "new message":
-                sockets.forEach((aSocket) => aSocket.send(`${socket.nickname} : ${message.payload}`));
-            case "nickname":
-                socket["nickname"] = message.payload;
-        }
+    socket.on("enter_room", (msg, done) => {
+        console.log(msg);
+        setTimeout(() => {done();}, 5000);
     });
-    socket.on("close", () => console.log("Disconnected from browser!"));
 });
-*/
 
 const port = 3000;
 httpServer.listen(port, () => console.log(`Listening on http://localhost:${port}`)); // http 서버에 접근
