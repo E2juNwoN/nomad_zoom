@@ -23,6 +23,12 @@ wsServer.on("connection", (socket) => {
         done();
         socket.to(roomName).emit("welcome");
     });
+    socket.on("disconnecting", () => {
+        socket.rooms.forEach((room) => socket.to(room).emit("bye"));
+        socket.onAny((event) => {
+            console.log(`Socket Event: ${event}`);
+        });
+    })
 });
 
 const port = 3000;

@@ -33,3 +33,8 @@ room.hidden = true;
 socket.on("welcome", () => {
     addMessage("Someone joined!");
 });
+
+socket.on("bye", () => {
+    socket.emit("leave_room");
+    addMessage("Someone left...");
+});
