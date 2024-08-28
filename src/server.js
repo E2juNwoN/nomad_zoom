@@ -15,8 +15,13 @@ const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer);
 
 wsServer.on("connection", (socket) => {
-    socket.on("enter_room", (msg, done) => {
-        console.log(msg);
+    socket.onAny((event) => {
+        console.log(`Socket Event: ${event}`);
+    });
+    socket.on("enter_room", (roomName, done) => {
+        console.log(socket.id);
+        socket.join(roomName);
+        console.log(socket.rooms); // socket이 현재 어떤 room에 있는지
         setTimeout(() => {done();}, 5000);
     });
 });
