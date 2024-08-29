@@ -50,13 +50,13 @@ form.addEventListener("submit", (event) => {
 const room = document.getElementById("room");
 room.hidden = true;
 
-socket.on("welcome", () => {
-    addMessage("Someone joined!");
+socket.on("welcome", (user) => {
+    addMessage(`${user} joined!`);
 });
 
-socket.on("bye", () => {
+socket.on("bye", (user) => {
     socket.emit("leave_room");
-    addMessage("Someone left...");
+    addMessage(`${user} left...`);
 });
 
 socket.on("new_message", addMessage);
