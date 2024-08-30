@@ -14,5 +14,12 @@ app.get("/*", (req, res) => res.redirect("/")); // catchall url
 const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer);
 
+wsServer.on("connection", (socket) => {
+    socket.on("join_room", (roomName, done) => {
+        socket.join(roomName);
+        done();
+    });
+});
+
 const port = 3000;
 httpServer.listen(port, () => console.log(`Listening on http://localhost:${port}`)); // http 서버에 접근
