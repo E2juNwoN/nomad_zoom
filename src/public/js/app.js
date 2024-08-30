@@ -30,6 +30,11 @@ function addMessage(msg) {
     ul.appendChild(li);
 }
 
+function titleRefresh(newCount) {
+    const h3 = room.querySelector("h3");
+    h3.innerText = `Room ${roomName} (${newCount})`;
+}
+
 const socket = io();
 
 const welcome = document.getElementById("welcome");
@@ -50,12 +55,14 @@ form.addEventListener("submit", (event) => {
 const room = document.getElementById("room");
 room.hidden = true;
 
-socket.on("welcome", (user) => {
+socket.on("welcome", (user, newCount) => {
+    titleRefresh(newCount);
     addMessage(`${user} joined!`);
 });
 
-socket.on("bye", (user) => {
+socket.on("bye", (user, newCount) => {
     socket.emit("leave_room");
+    titleRefresh(newCount);
     addMessage(`${user} left...`);
 });
 
