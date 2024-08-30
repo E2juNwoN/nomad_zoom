@@ -11,6 +11,20 @@ app.use("/public", express.static(__dirname + "/public"));
 app.get("/", (req, res) => res.render("home"));
 app.get("/*", (req, res) => res.redirect("/")); // catchall url
 
+function publicRooms() {
+    const {sockets: {adapter: {sids, rooms}}} = wsServer;
+    // const sids = wsServer.sockets.adapter.sids;
+    // const rooms = wsServer.sockets.adapter.rooms;
+
+    const publicRooms = [];
+    rooms.forEach((_, key) => {
+        if (sids.get(key) === undefined) {
+            publicRooms.push(key);
+        }
+    });
+    return publicRooms;
+}
+
 const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer);
 
@@ -24,7 +38,8 @@ wsServer.on("connection", (socket) => {
     socket.on("enter_room", (roomName, done) => {
         socket.join(roomName);
         done();
-        socket.to(roomName).emit("welcome", socket.nickname);
+        socket.to(roomName).emit("welcome", socket.nickname); // 메세지를 하나의 socket에만 보냄
+        wsServer.sockets.emit("room_change", publicRooms()); // 메세지를 모든 소켓에게 보냄
     });
 
     socket.on("disconnecting", () => {
