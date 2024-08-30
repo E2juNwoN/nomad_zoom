@@ -4,16 +4,14 @@ const myFace = document.getElementById("myFace");
 const muteBtn = document.getElementById("mute");
 const cameraBtn = document.getElementById("camera");
 const camerasSelect = document.getElementById("cameras");
-
 const call = document.getElementById("call");
+
 call.hidden = true;
 
 let myStream;
 let muted = false;
 let cameraOff = false;
-
 let roomName;
-
 let myPeerConnection;
 
 async function getCameras() {
@@ -36,23 +34,24 @@ async function getCameras() {
 }
 
 async function getMedia(deviceId) {
-    const initialConstraints = { // deviceID가 없을 때(cameras를 만들기 전)
-        audio: true,
-        video: { facingMode: "user" },
-    }
-    const cameraConstraints = { // deviceID가 있을 때
-        audio: true,
-        video: {deviceId: {exact: deviceId}},
-    }
-
-    try {
+  const initialConstraints = {
+    audio: true,
+    video: { facingMode: "user" },
+  };
+  const cameraConstraints = {
+    audio: true,
+    video: { deviceId: { exact: deviceId } },
+  };
+  try {
     myStream = await navigator.mediaDevices.getUserMedia(
-        deviceId? cameraConstraints : initialConstraints
+      deviceId ? cameraConstraints : initialConstraints
     );
     myFace.srcObject = myStream;
-    if(!deviceId) {await getCameras();}
-    } catch (e) {
-        console.log(e);
+    if (!deviceId) {
+      await getCameras();
+    }
+  } catch (e) {
+    console.log(e);
   }
 }
 
@@ -81,13 +80,13 @@ function handleCameraClick() {
   }
 }
 
-async function handelCameraChange() {
-    await getMedia(camerasSelect.value);
+async function handleCameraChange() {
+  await getMedia(camerasSelect.value);
 }
 
 muteBtn.addEventListener("click", handleMuteClick);
 cameraBtn.addEventListener("click", handleCameraClick);
-camerasSelect.addEventListener("input", handelCameraChange);
+camerasSelect.addEventListener("input", handleCameraChange);
 
 // Welcome Form (join a room)
 
@@ -101,24 +100,34 @@ async function startMedia() {
   makeConnection();
 }
 
-welcomeForm.addEventListener("submit", (event) => {
+function handleWelcomeSubmit(event) {
   event.preventDefault();
   const input = welcomeForm.querySelector("input");
   socket.emit("join_room", input.value, startMedia);
   roomName = input.value;
   input.value = "";
-});
+}
+
+welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 
 // Socket Code
 
-socket.on("welcome", () => {
-  console.log("someone joined");
-})
+socket.on("welcome", async () => {
+  const offer = await myPeerConnection.createOffer();
+  myPeerConnection.setLocalDescription(offer);
+  console.log("sent the offer");
+  socket.emit("offer", offer, roomName);
+});
+
+socket.on("offer", (offer) => {
+  console.log(offer);
+});
 
 // RTC Code
+
 function makeConnection() {
   myPeerConnection = new RTCPeerConnection();
-  myStream.getTracks().forEach((track) => {
-    myPeerConnection.addTrack(track, myStream);
-  })
+  myStream
+    .getTracks()
+    .forEach((track) => myPeerConnection.addTrack(track, myStream));
 }
