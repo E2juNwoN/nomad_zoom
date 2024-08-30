@@ -14,6 +14,8 @@ let cameraOff = false;
 
 let roomName;
 
+let myPeerConnection;
+
 async function getCameras() {
   try {
     const devices = await navigator.mediaDevices.enumerateDevices();
@@ -92,10 +94,11 @@ camerasSelect.addEventListener("input", handelCameraChange);
 const welcome = document.getElementById("welcome");
 const welcomeForm = welcome.querySelector("form");
 
-function startMedia() {
+async function startMedia() {
   welcome.hidden = true;
   call.hidden = false;
-  getMedia();
+  await getMedia();
+  makeConnection();
 }
 
 welcomeForm.addEventListener("submit", (event) => {
@@ -111,3 +114,11 @@ welcomeForm.addEventListener("submit", (event) => {
 socket.on("welcome", () => {
   console.log("someone joined");
 })
+
+// RTC Code
+function makeConnection() {
+  myPeerConnection = new RTCPeerConnection();
+  myStream.getTracks().forEach((track) => {
+    myPeerConnection.addTrack(track, myStream);
+  })
+}
