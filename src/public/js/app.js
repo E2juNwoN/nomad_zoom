@@ -24,16 +24,24 @@ async function getCameras() {
   }
 }
 
-async function getMedia() {
-  try {
-    myStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
+async function getMedia(deviceId) {
+    const initialConstraints = { // deviceID가 없을 때(cameras를 만들기 전)
+        audio: true,
+        video: { facingMode: "user" },
+    }
+    const cameraConstraints = { // deviceID가 있을 때
+        audio: true,
+        video: {deviceId: {exact: deviceId}},
+    }
+
+    try {
+    myStream = await navigator.mediaDevices.getUserMedia(
+        deviceId? cameraConstraints : initialConstraints
+    );
     myFace.srcObject = myStream;
-    await getCameras();
-  } catch (e) {
-    console.log(e);
+    if(!deviceId) {await getCameras();}
+    } catch (e) {
+        console.log(e);
   }
 }
 
@@ -64,5 +72,10 @@ function handleCameraClick() {
   }
 }
 
+async function handelCameraChange() {
+    await getMedia(camerasSelect.value);
+}
+
 muteBtn.addEventListener("click", handleMuteClick);
 cameraBtn.addEventListener("click", handleCameraClick);
+camerasSelect.addEventListener("input", handelCameraChange);
