@@ -12,6 +12,8 @@ let myStream;
 let muted = false;
 let cameraOff = false;
 
+let roomName;
+
 async function getCameras() {
   try {
     const devices = await navigator.mediaDevices.enumerateDevices();
@@ -100,5 +102,12 @@ welcomeForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const input = welcomeForm.querySelector("input");
   socket.emit("join_room", input.value, startMedia);
+  roomName = input.value;
   input.value = "";
+});
+
+// Socket Code
+
+socket.on("welcome", () => {
+  console.log("someone joined");
 })
