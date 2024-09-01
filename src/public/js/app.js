@@ -13,6 +13,7 @@ let muted = false;
 let cameraOff = false;
 let roomName;
 let myPeerConnection;
+let myDataChannel;
 
 async function getCameras() {
   try {
@@ -120,14 +121,25 @@ welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 
 // Socket Code
 
+// Offerer Side
 socket.on("welcome", async () => {
+  myDataChannel = myPeerConnection.createDataChannel("chat");
+  myDataChannel.addEventListener("message", (event) => console.log(event.data));
+  console.log("made data channel");
   const offer = await myPeerConnection.createOffer();
   myPeerConnection.setLocalDescription(offer);
   console.log("sent the offer");
   socket.emit("offer", offer, roomName);
 });
 
+// Answerer Side
 socket.on("offer", async (offer) => {
+  myPeerConnection.addEventListener("datachannel", (event) => {
+    myDataChannel = event.channel;
+    myDataChannel.addEventListener("message", (event) =>
+      console.log(event.data)
+    );
+  });
   console.log("received the offer");
   myPeerConnection.setRemoteDescription(offer);
   const answer = await myPeerConnection.createAnswer();
@@ -152,7 +164,7 @@ function makeConnection() {
   myPeerConnection = new RTCPeerConnection({
     iceServers: [
       {
-        urls: [ //Google이 제공하는 STUN 서버(내 소유X)
+        urls: [ // Google이 제공하는 STUN 서버(내 소유X)
           "stun:stun.l.google.com:19302",
           "stun:stun1.l.google.com:19302",
           "stun:stun2.l.google.com:19302",
